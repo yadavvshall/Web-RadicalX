@@ -20,7 +20,7 @@ function Login() {
   const [emailPassButtonDisabled, setEmailPassButtonDisabled] = useState(false);
   const [googleButtonDisabled, setGoogleButtonDisabled] = useState(false);
 
-  // Create Google authentication provider
+  
   const googleProvider = new GoogleAuthProvider();
 
   const handleSubmission = () => {
@@ -48,7 +48,7 @@ function Login() {
 
       const result = await signInWithPopup(auth, googleProvider);
 
-      // The user is signed in with Google. You can access the user information using result.user
+      
       console.log("Google Sign-In Successful:", result.user);
 
       setGoogleButtonDisabled(false);

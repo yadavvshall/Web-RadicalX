@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
-import { auth } from "../../firebase"; // Adjust the path based on your project structure
+import { auth } from "../../firebase"; 
 
 const FlashcardGenerator = () => {
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ const FlashcardGenerator = () => {
     const newFlashcard = { question, answer };
     setFlashcards([...flashcards, newFlashcard]);
 
-    // Clear input fields
+    
     setQuestion("");
     setAnswer("");
   };
