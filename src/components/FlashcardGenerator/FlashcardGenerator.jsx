@@ -1,8 +1,13 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase"; // Adjust the path based on your project structure
 
 const FlashcardGenerator = () => {
+  const navigate = useNavigate();
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
+  const [flashcards, setFlashcards] = useState([]);
 
   const handleQuestionChange = (e) => {
     setQuestion(e.target.value);
@@ -12,50 +17,80 @@ const FlashcardGenerator = () => {
     setAnswer(e.target.value);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleGenerateFlashcard = () => {
+    if (question.trim() === "" || answer.trim() === "") {
+      alert("Please enter both question and answer.");
+      return;
+    }
 
-    console.log("Flashcard generated:", { question, answer });
+    const newFlashcard = { question, answer };
+    setFlashcards([...flashcards, newFlashcard]);
 
+    // Clear input fields
     setQuestion("");
     setAnswer("");
   };
 
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error.message);
+    }
+  };
+
   return (
     <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded shadow-md">
-      <h1 className="text-2xl font-bold mb-4">Flashcard Generator</h1>
-      <form onSubmit={handleSubmit}>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Flashcard Generator</h1>
+        <button
+          onClick={handleLogout}
+          className="text-blue-500 hover:underline"
+        >
+          Logout
+        </button>
+      </div>
+      <form>
         <div className="mb-4">
-          <label htmlFor="question" className="block text-gray-700 text-sm font-bold mb-2">
-            Question:
-          </label>
+          <label className="block text-sm font-semibold mb-2">Question:</label>
           <input
             type="text"
-            id="question"
-            className="w-full border rounded py-2 px-3"
             value={question}
             onChange={handleQuestionChange}
+            className="w-full border p-2"
+            placeholder="Enter the question"
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="answer" className="block text-gray-700 text-sm font-bold mb-2">
-            Answer:
-          </label>
+          <label className="block text-sm font-semibold mb-2">Answer:</label>
           <input
             type="text"
-            id="answer"
-            className="w-full border rounded py-2 px-3"
             value={answer}
             onChange={handleAnswerChange}
+            className="w-full border p-2"
+            placeholder="Enter the answer"
           />
         </div>
         <button
-          type="submit"
-          className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700"
+          type="button"
+          onClick={handleGenerateFlashcard}
+          className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700"
         >
           Generate Flashcard
         </button>
       </form>
+
+      <div className="mt-4">
+        <h2 className="text-lg font-semibold mb-2">Flashcards:</h2>
+        <ul>
+          {flashcards.map((flashcard, index) => (
+            <li key={index} className="mb-2">
+              <strong>{flashcard.question}</strong> - {flashcard.answer}
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };
